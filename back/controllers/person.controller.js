@@ -1,6 +1,7 @@
 const {
   Person,
 } = require('../models/person.model');
+const validator = require('validator');
 
 // Get all columns from MySQL table
 exports.getAttributes = async (req, res) => {
@@ -13,6 +14,14 @@ exports.getTableData = async (req, res) => {
   const {
     column,
   } = req.body;
+  if (!validator.isLength(column, {
+    min: 1,
+    max: undefined,
+  })) {
+    res.status(400).send({
+      message: 'Request should be a non-empty string',
+    });
+  }
   try {
     const valuesAndCounts = await Person.aggregate(column, 'COUNT', {
       plain: false,
@@ -37,7 +46,7 @@ exports.getTableData = async (req, res) => {
       return {
         value: x[column],
         count: x.COUNT,
-        'average age': valuesAndAverages[index].AVG,
+        averageAge: valuesAndAverages[index].AVG,
       };
     });
     tableData.sort((a, b) => b.count - a.count);
