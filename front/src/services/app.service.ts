@@ -1,10 +1,10 @@
-// import axios from "axios";
-import * as axios from "../__mocks__/axios";
+import axios from "axios";
 import { API_URL } from "../config";
 
 export const getVariables = async () => {
   try {
-    return await axios.get(API_URL);
+    const variablesJSON = await axios.get(API_URL);
+    return variablesJSON.data.choosableAttributes;
   } catch (err) {
     console.log(err);
     return {};
@@ -19,6 +19,6 @@ export const getVariableInfo = async (variable: string) => {
     return response.data;
   } catch (err) {
     console.log(err);
-    return {};
+    return [];
   }
 };

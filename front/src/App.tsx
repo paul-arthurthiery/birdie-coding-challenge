@@ -1,7 +1,8 @@
 import { MenuItem, Select } from "@material-ui/core";
 import React, { Component } from "react";
 import "./App.css";
-import {getVariableInfo, getVariables} from "./services/app.service";
+import CensusTable from "./CensusTable";
+import {getVariables} from "./services/app.service";
 
 class App extends Component {
 
@@ -25,6 +26,7 @@ class App extends Component {
 
   public render() {
     let counter = 0;
+    let tableArea = <CensusTable variable={this.state.currentVariable}/>;
     const listItems = this.state.variables.map((x: string) => {
       counter++;
       return <MenuItem key={counter} value={x}> {x} </MenuItem>;
@@ -35,6 +37,7 @@ class App extends Component {
           Select variable
           </MenuItem>,
         );
+      tableArea = <p> Select a variable to show it's contents </p>;
     }
     return (
       <>
@@ -42,6 +45,7 @@ class App extends Component {
           <Select value={this.state.currentVariable} onChange={this.handleChange}>
             {listItems}
           </Select>
+          {tableArea}
         </div>
       </>
     );
