@@ -40,10 +40,12 @@ class CensusTable extends Component<{
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell numeric={true}>#</TableCell>
-              <TableCell >{this.props.variable.charAt(0).toUpperCase() + this.props.variable.slice(1)}</TableCell>
-              <TableCell>Count</TableCell>
-              <TableCell>Average Age</TableCell>
+              <TableCell className="headRow">#</TableCell>
+              <TableCell className="headRow">{
+                this.props.variable.charAt(0).toUpperCase() + this.props.variable.slice(1)
+              }</TableCell>
+              <TableCell className="headRow">Count</TableCell>
+              <TableCell className="headRow">Average Age</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -51,7 +53,7 @@ class CensusTable extends Component<{
               this.props.rows.slice(0, 100).map((row) => {
                 rowNumber++;
                 return(
-                <TableRow key={rowNumber}>
+                <TableRow key={rowNumber} className="TableRow">
                   <TableCell component="th" scope="row">{rowNumber}</TableCell>
                   <TableCell>{row.value}</TableCell>
                   <TableCell>{row.count}</TableCell>

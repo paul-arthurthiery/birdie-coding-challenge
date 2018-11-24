@@ -65,7 +65,7 @@ exports.getTableData = async (req, res) => {
       return {
         value: x[column],
         count: x.COUNT,
-        averageAge: valuesAndAverages[index].AVG,
+        averageAge: valuesAndAverages[index].AVG.slice(0, -3),
       };
     });
 

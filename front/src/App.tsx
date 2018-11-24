@@ -53,9 +53,11 @@ class App extends Component<{
     }
     return (
         <div className="App">
-          <Select value={this.props.currentVariable} onChange={this.handleChange}>
-            {listItems}
-          </Select>
+          <div className="Select">
+            <Select value={this.props.currentVariable} onChange={this.handleChange}>
+              {listItems}
+            </Select>
+          </div>
           {tableArea}
         </div>
     );

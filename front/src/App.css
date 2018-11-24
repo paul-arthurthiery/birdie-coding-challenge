@@ -1,3 +1,21 @@
 .App {
   text-align: center;
+  margin: auto;
+  margin-top: 10%;
+  width: 85%;
+}
+
+.Select {
+  text-align: left;
+  padding-bottom: 5%;
+  border-bottom: solid 1px #666;
+}
+
+.TableRow:nth-child(2n+1) {
+  background-color: #D3D3D3;
+}
+
+.headRow {
+  font-weight: bold !important;
+  color: #000 !important;
 }
