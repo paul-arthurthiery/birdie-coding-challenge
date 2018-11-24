@@ -1,55 +1,69 @@
 import { MenuItem, Select } from "@material-ui/core";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
+import { connect  } from "react-redux";
+import { fetchVariables, updateCurrentVariable } from "./actions/tableActions";
 import "./App.css";
-import CensusTable from "./CensusTable";
-import {getVariables} from "./services/app.service";
+import CensusTable from "./components/CensusTable";
 
-class App extends Component {
+class App extends Component<{
+  currentVariable: string,
+  variables: string[],
+  fetchVariables: () => string[],
+  updateCurrentVariable: (variable: string) => void,
+  store,
+}, {}> {
 
-  public readonly state: {currentVariable: string, variables: string[]} = {
-    currentVariable: "Select variable",
-    variables: [],
+  private static propTypes = {
+    currentVariable: PropTypes.string.isRequired,
+    fetchVariables: PropTypes.func.isRequired,
+    updateCurrentVariable: PropTypes.func.isRequired,
+    variables: PropTypes.array.isRequired,
   };
 
-  public componentDidMount = async () => {
-    const variables = await getVariables();
-    this.setState({
-      variables,
-    });
+  constructor(props) {
+    super(props);
+    this.props.updateCurrentVariable("Select variable");
   }
 
   public handleChange = (event) => {
-    this.setState({
-      currentVariable: event.target.value,
-    });
+    this.props.updateCurrentVariable(event.target.value);
+  }
+
+  public componentDidMount = async () => {
+    await this.props.fetchVariables();
   }
 
   public render() {
     let counter = 0;
-    let tableArea = <CensusTable variable={this.state.currentVariable}/>;
-    const listItems = this.state.variables.map((x: string) => {
+    let tableArea = <CensusTable variable={this.props.currentVariable}/>;
+    const listItems: JSX.Element[] = this.props.variables.map((x: string) => {
       counter++;
       return <MenuItem key={counter} value={x}> {x} </MenuItem>;
     });
-    if (this.state.currentVariable === "Select variable") {
+    if (this.props.currentVariable === "Select variable") {
       listItems.unshift(
         <MenuItem key={0} value={"Select variable"}>
           Select variable
-          </MenuItem>,
-        );
+        </MenuItem>,
+      );
       tableArea = <p> Select a variable to show it's contents </p>;
+    } else {
+      tableArea = <CensusTable variable={this.props.currentVariable}/>;
     }
     return (
-      <>
         <div className="App">
-          <Select value={this.state.currentVariable} onChange={this.handleChange}>
+          <Select value={this.props.currentVariable} onChange={this.handleChange}>
             {listItems}
           </Select>
           {tableArea}
         </div>
-      </>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  currentVariable: state.tableData.currentVariable,
+  variables: state.tableData.variables,
+});
+export default connect (mapStateToProps, { fetchVariables, updateCurrentVariable })(App);

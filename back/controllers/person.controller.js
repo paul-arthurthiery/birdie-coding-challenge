@@ -3,7 +3,7 @@ const {
 } = require('../models/person.model');
 //const validator = require('validator');
 
-// Get all columns from MySQL table, omit some values 
+// Get all columns from MySQL table, omit some values
 exports.getAttributes = async (req, res) => {
   const choosableAttributes = Object.keys(Person.attributes).filter(item => item !== 'age' && item !== 'createdAt' && item !== 'updatedAt');
   res.status(200).send({
@@ -28,7 +28,7 @@ exports.getTableData = async (req, res) => {
 
   if (!(typeof (column) === 'string' && column.length > 0 && Object.keys(Person.attributes).includes(column))) {
     res.status(400).send({
-      message: 'Request should be a non-empty string',
+      message: `Request should be a non-empty string, not ${column}`,
     });
     return;
   }

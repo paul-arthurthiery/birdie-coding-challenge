@@ -1,29 +1,39 @@
 import { Table, TableBody,  TableCell, TableHead, TableRow  } from "@material-ui/core";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
-import "./App.css";
-import {getVariableInfo} from "./services/app.service";
+import { connect } from "react-redux";
+import { fetchTableData } from "../actions/tableActions";
+import "../App.css";
 
-class CensusTable extends Component<{variable: string}> {
-  public readonly state: {rows: Array<{value: string, count: number, averageAge: string}>} = {
-      rows: [],
-    };
+class CensusTable extends Component<{
+  variable: string,
+  fetchTableData: (variable: string) => object[],
+  rows: Array<{
+    value: string,
+    count: number,
+    averageAge: string}>,
+}, {} > {
 
-  public componentDidMount = async () => {
-    this.setState({
-      rows: await getVariableInfo(this.props.variable),
-    });
+  private static propTypes = {
+    fetchTableData: PropTypes.func.isRequired,
+    rows: PropTypes.array.isRequired,
+  };
+
+  constructor(props) {
+    super(props);
+    this.props.fetchTableData(this.props.variable);
   }
 
   public getSnapshotBeforeUpdate = async (prevProps) => {
     if (this.props.variable !== "Select variable" && prevProps.variable !== this.props.variable) {
-      await this.updateTable();
+      await this.props.fetchTableData(this.props.variable);
     }
   }
 
   public render() {
     let rowNumber: number = 0;
-    const nonDisplayed: number = this.state.rows.length - 100;
-    const textNonDisplayed  = nonDisplayed > 0 ? <p>Number of lines not displyed: {nonDisplayed}</p> : <br/>;
+    const nonDisplayed: number = this.props.rows.length - 100;
+    const textNonDisplayed  = nonDisplayed > 0 ? <p>Number of lines not displayed: {nonDisplayed}</p> : <br/>;
     return(
       <div className="CensusTable">
         {textNonDisplayed}
@@ -38,7 +48,7 @@ class CensusTable extends Component<{variable: string}> {
           </TableHead>
           <TableBody>
             {
-              this.state.rows.slice(0, 100).map((row) => {
+              this.props.rows.slice(0, 100).map((row) => {
                 rowNumber++;
                 return(
                 <TableRow key={rowNumber}>
@@ -55,24 +65,10 @@ class CensusTable extends Component<{variable: string}> {
         </div>
     );
   }
-
-  private updateTable = async () => {
-    try {
-      this.setState({
-        rows: [],
-      });
-      const newRows: Array<{
-        value: string,
-        count: number,
-        averageAge: string}> = await getVariableInfo(this.props.variable);
-      if (!(newRows.length > 0)) { throw new Error("Invalid variable"); }
-      this.setState({
-        rows:  newRows,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
 }
 
-export default CensusTable;
+const mapStateToProps = (state) => ({
+  rows: state.tableData.rows,
+});
+
+export default connect (mapStateToProps, { fetchTableData })(CensusTable);
