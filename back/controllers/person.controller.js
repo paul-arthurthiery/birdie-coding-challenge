@@ -1,14 +1,17 @@
 const {
   Person,
 } = require('../models/person.model');
-//const validator = require('validator');
+// const validator = require('validator');
 
 // Get all columns from MySQL table, omit some values
 exports.getAttributes = async (req, res) => {
   const choosableAttributes = Object.keys(Person.attributes).filter(item => item !== 'age' && item !== 'createdAt' && item !== 'updatedAt');
   res.status(200).send({
-    choosableAttributes
+    choosableAttributes,
   });
+  return {
+    choosableAttributes,
+  };
 };
 
 // Get required table data
@@ -33,10 +36,13 @@ exports.getTableData = async (req, res) => {
     return;
   }
   try {
-
     // I chose to use an ORM here since they scale better and the perfs seem alright
     // these two aggregates could be done with the following SQL query :
     //
+    // SELECT education, COUNT(education) as count, AVG(age)
+    // FROM census_learn_sql
+    // GROUP BY education
+    // ORDER BY count DESC;
 
     // Groups selected column by values and uses COUNT on the grouped values
     const valuesAndCounts = await Person.aggregate(column, 'COUNT', {

@@ -1,7 +1,6 @@
 // normal express setup, nothing much to see here
 const express = require('express');
 const createError = require('http-errors');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 require('./config/database.config');
@@ -17,9 +16,9 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
 
